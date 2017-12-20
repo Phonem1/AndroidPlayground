@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">AndroidPlayground</string>
+    <string name="team_a">Team A</string>
+    <string name="value_team_a">0</string>
+    <string name="buttxt_team_a_three">+3 Points</string>
+    <string name="buttxt_team_a_two">+2 Points</string>
+    <string name="name_free_throw">Free throw</string>
+    <string name="team_b">Team B</string>
+    <string name="value_team_b">0</string>
+    <string name="buttxt_team_b_three">+3 Points</string>
+    <string name="buttxt_team_b_two">+2 Points</string>
+    <string name="buttxt_reset">Reset</string>
 </resources>
