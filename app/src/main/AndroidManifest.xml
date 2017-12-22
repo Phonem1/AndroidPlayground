@@ -12,8 +12,7 @@
         <activity android:name=".MainActivity">
 
         </activity>
-        <activity android:name=".CountDown_Activity"
-            android:label="CountDown timer">
+        <activity android:name=".CountDown_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

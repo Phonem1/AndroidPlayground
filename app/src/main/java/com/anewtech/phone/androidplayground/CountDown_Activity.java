@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.anewtech.phone.androidplayground.Models.CountDownViewModel;
@@ -26,8 +27,6 @@ public class CountDown_Activity extends AppCompatActivity {
 
     ReplaySubject<Integer> observable;
     CountDownTimer countDownTimer;
-    int
-//    boolean isCounting = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,8 +34,14 @@ public class CountDown_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_countdown);
         mCountModel = ViewModelProviders.of(this).get(CountDownViewModel.class);
 
-            displayCount(mCountModel.countRemaining);
-
+        final android.arch.lifecycle.Observer<Integer> countObserver = new android.arch.lifecycle.Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer integer) {
+                int valueC = integer;
+                displayCount(valueC);
+            }
+        };
+        mCountModel.getCountRemaining().observe(this,countObserver);
     }
 
     public void startCount(View v) {
@@ -50,8 +55,10 @@ public class CountDown_Activity extends AppCompatActivity {
 
     }
 
-    public void setCountTen(View v) {
-        mCountModel.count = 10;
+    public void setCounter(View v) {
+        EditText customCountDown = findViewById(R.id.customCount_et);
+        String inputCD =  customCountDown.getText().toString();
+        mCountModel.count = Integer.valueOf(inputCD);
         displayCount(mCountModel.count);
     }
 
@@ -65,18 +72,17 @@ public class CountDown_Activity extends AppCompatActivity {
         countDownTimer = new CountDownTimer(mCountModel.count*1005, 1000) {
             @Override
             public void onTick(long millisUntilFinish) {
-//                isCounting = true;
-                mCountModel.countRemaining = (int)millisUntilFinish/1000;
-                observable.onNext((int)millisUntilFinish/1000);
-                displayCount(mCountModel.countRemaining);
+                mCountModel.setCountRemaining((int) (millisUntilFinish/1000));
+                observable.onNext(mCountModel.getCountRemaining().getValue());
+//                displayCount(mCountModel.countRemaining);
                 toLog(String.valueOf(millisUntilFinish));
             }
 
             @Override
             public void onFinish() {
-                mCountModel.countRemaining = 0;
-                displayCount(mCountModel.countRemaining);
-//                isCounting = false;
+                mCountModel.count = 0;
+                mCountModel.setCountRemaining(0);
+                displayCount(mCountModel.getCountRemaining().getValue());
             }
         }.start();
 
@@ -112,8 +118,6 @@ public class CountDown_Activity extends AppCompatActivity {
         counter.setText(String.valueOf(count));
     }
 
-
-
     private void toLog(String msg) {
         Log.e("CountDown lifecycle", msg);
     }
@@ -122,4 +126,5 @@ public class CountDown_Activity extends AppCompatActivity {
 
 /**
  * Tried a class that handles logic but updated ui in that class doesn't work with ViewModel. Might need <ViewModel inst> = ViewModelProviders.of... for it to work.
+ * View Model only save state of variable, doesn't call function. --(tested using)--> screen rotation
  */
